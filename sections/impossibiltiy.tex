@@ -1,0 +1,38 @@
+\section{Coresets For General Form of Regularized Regression }
+For the case of ridge regression $(p,q,r,s=2)$, Avron et al. \cite{avron2017sharper} showed smaller coresets with size dependent on the statistical dimension of the matrix $\M{A}$. They constructed their coreset by sampling according to the ridge leverage scores. In this section we show that it is not always  possible to get a coreset for a regularized version of regression problem which is strictly smaller in size than the coreset for its unregularized counterpart. Note that, for the purposes of the following theorem,
+a coreset of $\M{A}$ is any matrix $\M{A_c}$ that satisfies the coreset condition; in particular, for the following theorem, $\M{A_c}$ does not need to be a {\em sampling based coreset} of $\M{A}$. 
+
+\begin{theorem}\label{th:ss preserve}Given a matrix $\M{A} \in \mathbb{R}^{n \times d}$ and a $\lambda >0$, any coreset for the problem $\|\mathbf{Ax}\|_p^r + \lambda \|\M{x}\|_q^s $, where $r \neq s$, $p,q \geq 1$ and $ r,s > 0 $, is also a coreset for  $\|\mathbf{Ax}\|_p^r $.
+\end{theorem}
+\begin{proof}
+	The proof is by contradiction. Let $\M{A_c}$ be a coreset for $\|\mathbf{Ax}\|_p^r + \lambda \|\M{x}\|_q^s $, where $r \neq s$. Therefore, by definition of coreset, $\forall \M{x} \in \mathbb{R}^d$,
+	$$ \|\mathbf{A_cx}\|_p^r + \lambda \|\M{x}\|_q^s \in (1 \pm \epsilon)(\|\mathbf{Ax}\|_p^r + \lambda \|\M{x}\|_q^s)$$
+	Suppose $\M{A_c}$ is not a coreset for $\|\mathbf{Ax}\|_p^r $. We consider the two cases:\\
+	\textbf{Case 1}:  $\exists  \M{x} \in \mathbb{R}^{d}$ s.t. $\|\mathbf{A_cx}\|_p^r > (1+\epsilon) \|\mathbf{Ax}\|_p^r$. Define $\epsilon'$ to be such that $\|\mathbf{A_cx}\|_p^r = (1+\epsilon')\|\mathbf{Ax}\|_p^r$. Clearly, $\epsilon' > \epsilon$. Let us define $\M{y}=\alpha\M{x}$ for some suitable $\alpha$. Consider the ratio
+	\begin{eqnarray*}
+	\frac{\|\mathbf{A_cy}\|_p^r + \lambda \|\M{y}\|_q^s}{\|\mathbf{Ay}\|_p^r + \lambda \|\M{y}\|_q^s}
+	&=&\frac{\alpha^r \|\mathbf{A_c x}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}{\alpha^r \|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}\\
+	&=&\frac{\alpha^r(1+\epsilon')\|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}{\alpha^r \|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}
+	\end{eqnarray*}
+	 Suppose $r>s$. Then, $ 
+	      \frac{\alpha^r(1+\epsilon')\|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}{\alpha^r \|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}   = 
+	    \frac{\alpha^{r-s}(1+\epsilon')\|\mathbf{Ax}\|_p^r + \lambda \|\M{x}\|_q^s}{\alpha^{r-s} \|\mathbf{Ax}\|_p^r + \lambda \|\M{x}\|_q^s} $. Here we want the ratio to be greater than $(1+ \epsilon)$.
+	  Without loss of generality  we can set the ratio to be greater than $(1+(\frac{\epsilon + \epsilon'}{2}))$ since $\epsilon' > \epsilon$. For this we can set $\alpha$ s.t. $\alpha^{(r-s)} > \frac{2\lambda\|\M{x}\|_q^s}{\|\M{Ax}\|_p^r} $.\\
+	 Similarly if $r<s$, $
+	     \frac{\alpha^r(1+\epsilon')\|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}{\alpha^r \|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}  =  \frac{(1+\epsilon')\|\mathbf{Ax}\|_p^r + \alpha^{s-r} \lambda \|\M{x}\|_q^s}{ \|\mathbf{Ax}\|_p^r + \alpha^{s-r}\lambda \|\M{x}\|_q^s}$. Here for the ratio to be greater than $(1+\epsilon)$, we can set $\alpha$ such that $\alpha^{(s-r)} < \frac{\|\M{Ax}\|_p^r}{2\lambda\|\M{x}\|_q^s}$\\
+	 \textbf{Case 2}: $\exists  \M{x} \in \mathbb{R}^{d}$ s.t. $\|\mathbf{A_cx}\|_p^r < (1-\epsilon) \|\mathbf{Ax}\|_p^r$ and $\|\mathbf{A_cx}\|_p^r = (1-\epsilon')\|\mathbf{Ax}\|_p^r$ for some $\epsilon' > \epsilon$.
+    Again define $\M{y}=\alpha\M{x}$ for some suitable $\alpha$. Consider the ratio
+	\begin{eqnarray*}
+	\frac{\|\mathbf{A_cy}\|_p^r + \lambda \|\M{y}\|_q^s}{\|\mathbf{Ay}\|_p^r + \lambda \|\M{y}\|_q^s} &=& \frac{\alpha^r \|\mathbf{A_cx}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}{\alpha^r \|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}\\
+	&=&\frac{\alpha^r(1-\epsilon')\|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}{\alpha^r \|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}
+	\end{eqnarray*}
+	Suppose $r>s$. Here $\frac{\alpha^r(1-\epsilon')\|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}{\alpha^r \|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}  = \frac{\alpha^{r-s}(1-\epsilon')\|\mathbf{Ax}\|_p^r + \lambda \|\M{x}\|_q^s}{\alpha^{r-s} \|\mathbf{Ax}\|_p^r + \lambda \|\M{x}\|_q^s}$. We want the ratio to be smaller than $(1-\epsilon)$. Without loss of generality, we can set the ratio to be smaller than $(1+(\frac{\epsilon + \epsilon'}{2}))$ since $\epsilon' > \epsilon$. For this can set $\alpha$ s.t. $\alpha^{(r-s)} > \frac{2\lambda\|\M{x}\|_q^s}{\|\M{Ax}\|_p^r} $.\\
+	 Similarly if $r<s$, $\frac{\alpha^r(1-\epsilon')\|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}{\alpha^r \|\mathbf{Ax}\|_p^r + \lambda\alpha^s \|\M{x}\|_q^s}  = \frac{(1-\epsilon')\|\mathbf{Ax}\|_p^r + \alpha^{s-r} \lambda \|\M{x}\|_q^s}{ \|\mathbf{Ax}\|_p^r + \alpha^{s-r}\lambda \|\M{x}\|_q^s}$. Here for the ratio to be smaller than $(1-\epsilon)$, we can set $\alpha$ such that $\alpha^{(s-r)} < \frac{\|\M{Ax}\|_p^r}{2\lambda\|\M{x}\|_q^s}$. Hence in both the cases, for both scenarios of $r$ and $s$ we can set an $\alpha$ which gives us a contradiction to the fact that $\M{A_c}$ is a coreset for the regularized function. Hence our assumption is wrong and $\M{A_c}$ is also a coreset for the unregularized function.
+\end{proof}
+This theorem implies the following corollary which gives our impossibility result.
+\begin{corollary}\label{cor: impos res}
+	Given a matrix $\M{A} \in \mathbb{R}^{n \times d} $ and a corresponding vector $\M{b} \in \mathbb{R}^{n}$, then for the function $\|\M{A}\M{x} - \M{b}\|_p^r	+ \lambda \|\M{x}\|_q^s$, we cannot get a coreset of size smaller than the size of the optimal sized coreset for $\|\M{A}\M{x} - \M{b}\|_p^r.$
+	\begin{proof}
+	We construct a coreset for  $\|\mathbf{A'x'}\|_p^r + \lambda \|\M{x'}\|_q^s$ for the augmented matrix $\M{A'}, \forall \M{x'} \in \mathbb{R}^{d+1}$. It will also be a coreset for the regularized regression problem. Now applying Theorem \ref{th:ss preserve},  any coreset  of the problem  $\|\mathbf{A'x'}\|_p^r + \lambda \|\M{x'}\|_q^s $ for $r\neq s$ is also a coreset of $\|\mathbf{A'x'}\|_p^r $.   Hence its size cannot be smaller than a coreset for the unregularized problem. Even when $\M{x'}$ is restricted to be of the form $\begin{bmatrix} \mathbf{x}\\ -1 \end{bmatrix}$, for $\M{b}$ as a $\M{0}$ vector, Theorem \ref{th:ss preserve} implies no smaller coreset is possible.
+   \end{proof}
+\end{corollary}

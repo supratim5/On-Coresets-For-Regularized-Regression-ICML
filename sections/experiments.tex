@@ -1,0 +1,88 @@
+\section{Experiments}
+In this section we describe the empirical results supporting our claims. We performed experiments for the modified lasso and the RLAD problem. We generated a matrix $\M{A}$ of size $100000 \times 30$ in which there a few rows with high leverage scores. The construction of these matrix is described in \cite{yang2015implementing} where they refer to it as NG matrix. A solution vector $\M{x} \in \mathbb{R}^{30}$ was generated randomly and a response vector $\M{b= Ax} + (10^-5)\frac{\|\M{b}\|_2}{\|\M{e}\|_2}\M{e}$ where $\M{e}$ is a vector of noise. All the experiments were performed in \textbf{MatlabR2017a} on a machine with 16GB memory and 8 cores of 3.40 GHz. In our first experiment we solved the modified lasso problem on the entire data matrix $\M{A}$ and response vector $\M{b}$ to see the effect on sparsity of solution for different values of lambda. We also solved the lasso and the ridge problem on the same data and compared the number of zeros in the solution vector for different values of lambda. To take numerical precision into account we converted each coordinate of the vector having absolute value less than $10^{-6}$ to $0$ and then plotted the number of zeros against lambda for each problem. As seen in Figure \ref{ModifiedLASSOsparse}, just like lasso, the modified lasso also induces sparsity in the solution and hence can be used as an alternate to lasso. As expected no sparsity was induced by ridge regression.
+\begin{figure}[ht]
+\vskip 0.2in
+\begin{center}
+\centerline{\includegraphics[width=\columnwidth]{"chart"}}
+\caption{Sparsity Induced by Lasso and Modified Lasso}
+\label{ModifiedLASSOsparse}
+\end{center}
+\vskip -0.2in
+\end{figure}
+In the next experiment we compared the performance of subsample of data sampled using ridge leverage scores with the subsample sampled using uniform sampling. We solved the modified lasso problem on the original data and recorded the value say $V1$. The ridge leverage scores were calculated exactly for the data points. Then we sampled a subsample of points using ridge leverage scores from $[\M{A} ~~ \M{b}]$. The sampled points were rescaled by the reciprocal of sample size times the probability of sampling the point. We solved the modified lasso on the smaller data and recorded the solution vector. The solution vector was plugged in the modified lasso function with the original large matrix $[\M{A} ~~ \M{b}]$ and the value was noted as $V2$. We calculated the relative error as $\frac{|V1-V2|}{V1}$. Similar experiment was performed using uniform sampling. In Table \ref{Table 1} we report the values of relative error for different sample sizes. Here the value of $\lambda =0.5$. The value is a median of 5 random experiments for each sample size. It can be seen that even for very small sample sizes, samples obtained using ridge leverage score performed much better than uniform sampling. In fact, uniform sampling showed significant improvement in its own relative error only at much larger sample sizes of the order of $1000$'s.
+\begin{table}[t]
+\caption{Relative error of different coreset sizes for Modified Lasso, $\lambda=0.5$}
+\label{Table 1}
+\vskip 0.15in
+\begin{center}
+\begin{small}
+\begin{sc}
+\begin{tabular}{lcccr}
+\toprule
+Sample Size & Ridge Leverage & Uniform Sampling \\
+& Scores Sampling & \\
+\midrule
+\textbf{30}          & 0.059   & 0.8289     \\ 
+\textbf{50}          & 0.220   & 0.8289     \\ 
+\textbf{100}         & 0.031   & 0.8286     \\ 
+\textbf{150}         & 0.028   & 0.8286    \\ 
+\textbf{200}         & 0.013   & 0.8287     \\ 
+\bottomrule
+\end{tabular}
+\end{sc}
+\end{small}
+\end{center}
+\vskip -0.1in
+\end{table}
+In the next experiment we fixed a sample size of $200$ and solved modified lasso for various values of lambda. We report the relative error for both ridge leverage scores based sampling and uniform sampling. We report the median of 5 random experiments for each value of lambda for both schemes of sampling in Table \ref{Table 2}. Although since both the objective function and the ridge leverage score depend on the value of lambda, still we can observe a decrease in value of relative error for the same sample size with increasing lambda except for one case. This effect is more pronounced in case of uniform sampling where the probabilities are independent of lambda.
+\begin{table}[t]
+\caption{Relative error of different lambda values, $($sample size $=200)$ for Modified Lasso}
+\label{Table 2}
+\vskip 0.15in
+\begin{center}
+\begin{small}
+\begin{sc}
+\begin{tabular}{lcccr}
+\toprule
+Lambda & Ridge Leverage & Uniform Sampling \\
+& Scores Sampling & \\ 
+\midrule
+\textbf{0.1}  & 0.026  & 2.975  \\
+\textbf{0.5}  & 0.013  & 0.828 \\
+\textbf{0.75} & 0.017  & 0.576 \\
+\textbf{1}    & 0.014  & 0.443  \\
+\textbf{5}    & 0.007  & 0.103 \\
+\bottomrule
+\end{tabular}
+\end{sc}
+\end{small}
+\end{center}
+\vskip -0.1in
+\end{table}
+In our final experiment we compared the performance of sensitivity based sampling with uniform sampling for the RLAD in similar manner as for modified lasso. Here we used sensitivity upper bounds we calculated for the RLAD problem. The median value of relative error of 5 experiments is reported in Table \ref{Table 3}. Sensitivity based sampling clearly outperforms uniform sampling in this case.
+
+\begin{table}[t]
+\caption{Relative error of different coreset sizes for RLAD}
+\label{Table 3}
+\vskip 0.15in
+\begin{center}
+\begin{small}
+\begin{sc}
+\begin{tabular}{lcccr}
+\toprule
+Sample Size & Sensitivity  & Uniform Sampling \\
+& based Sampling & \\
+\midrule
+\textbf{30}  & 0.69 & 385.99\\
+\textbf{50}  & 0.65 & 112.70 \\
+\textbf{100} & 0.34 & 98.53 \\
+\textbf{150} & 0.19 & 96.09  \\
+\textbf{200} & 0.17 & 27.49\\
+\bottomrule
+\end{tabular}
+\end{sc}
+\end{small}
+\end{center}
+\vskip -0.1in
+\end{table}
+To the best of our knowledge, this is the first set of experiments evaluating performance of coresets for any regularized form of regression. These clearly demonstrate that smartly constructed coresets can give performance comparable to original data at much smaller sizes and verify our theoretical claims. 

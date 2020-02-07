@@ -1,0 +1,89 @@
+\section{The Modified Lasso}
+Given  a matrix $ \mathbf{A} \in {\mathbb{R}}^{n \M{x}d}$ with rank $d$ and $n \gg d$ and a vector $\mathbf{b} \in \mathbb{R} ^ n $ and $\lambda > 0$, the lasso problem is stated as
+\begin{eqnarray*}
+&\min _{\mathbf{x} \in \mathbb{R}^d}& \|\mathbf{Ax} - \mathbf{b}\|_2^2 + \lambda \|\M{x}\|_1\\
+=&\min _{\mathbf{x} \in \mathbb{R}^d}& {\sum_{i=1}^n (\mathbf{a}_i^T\mathbf{x} - b_i)^2} + \lambda~\|\M{x}\|_1
+\end{eqnarray*}
+However as $r=2$ and $s=1$ , by corollary \ref{cor: impos res} we can not hope to get a coreset smaller than the one for least square regression. % If we define  sensitivity for lasso problem, then by strategy similar to the proof of Theorem \ref{th:ss preserve}, we can show that the sum of sensitivities is $d$, which is the same as that for the least square regression problem. 
+
+To  preserve the sparsity inducing nature of the lasso problem and still enable a smaller sized coreset, we consider a slightly different version of lasso  which we call {\em modified lasso}. It is stated as follows:
+\begin{eqnarray*}
+&\min _{\mathbf{x} \in \mathbb{R}^d}& \|\mathbf{Ax} - \mathbf{b}\|_2^2 + \lambda \|\M{x}\|_1^2 \\
+=&\min _{\mathbf{x} \in \mathbb{R}^d}& {\sum_{i=1}^n (\mathbf{a}_i^T\mathbf{x} - b_i)^2} + \lambda~\|\M{x}\|_1^2
+\end{eqnarray*}
+
+Note that if we look at the constrained version (i.e. least square with constraint $\|\M{x}\|_1 \le R$) of the normal lasso, and the modified one, the problem formulations are same, with a change in the constraint radius $R$. However, as we will see, the regularized versions of the two problems in terms of their behaviour with respect to the optimal coreset size. 
+
+We will empirically show that just like lasso this form also induces sparsity in the solution vector. We now show a stronger result which leads us to a smaller coreset for the modified lasso problem.
+\begin{theorem}
+Given a matrix $\M{A} \in \mathbb{R}^{n \times d}$, corresponding vector $\M{b} \in \mathbb{R}^n$, any coreset for the function $\|\M{Ax-b}\|_p^p + \lambda\|\M{x}\|_p^p$ is also a coreset of the function $\|\M{Ax-b}\|_p^p + \lambda\|\M{x}\|_q^p$ where $q\leq p$, $p,q \geq 1.$
+\label{thm:pqcoreset}
+\end{theorem}
+\begin{proof}
+    Let $(\M{A_c}, \M{b_c})$ be a coreset for the function $\|\M{Ax-b}\|_p^p + \lambda\|\M{x}\|_p^p$. Hence,
+    \begin{align*}
+    &\|\M{A_cx-b_c}\|_p^p + \lambda\|\M{x}\|_q^p\\
+    &=\|\M{A_cx-b_c}\|_p^p + \lambda\|\M{x}\|_p^p - \lambda\|\M{x}\|_p^p +  \lambda\|\M{x}\|_q^p\\
+    &\leq (1+ \epsilon)(\|\M{Ax-b}\|_p^p + \lambda\|\M{x}\|_p^p)-\lambda\|\M{x}\|_p^p +  \lambda\|\M{x}\|_q^p\\ 
+    &=(1+\epsilon)\|\M{Ax-b}\|_p^p + \epsilon\lambda\|\M{x}\|_p^p+\lambda\|\M{x}\|_q^p\\
+    &\leq (1+\epsilon)\|\M{Ax-b}\|_p^p + \epsilon\lambda\|\M{x}\|_q^p+\lambda\|\M{x}\|_q^p\\
+    &= (1+ \epsilon)(\|\M{Ax-b}\|_p^p + \lambda\|\M{x}\|_q^p).
+    \end{align*}
+     Hence the statement is proven.
+    The second inequality follows from the fact that for any $\M{x} \in \mathbb{R}^d$, $\|\M{x}\|_q \geq \|\M{x}\|_p$ for $p\geq q$. This proves one direction in the definition of coreset. For the other direction consider
+    \begin{align*}
+     &\|\M{A_cx-b_c}\|_p^p + \lambda\|\M{x}\|_q^p\\
+     &=\|\M{A_cx-b_c}\|_p^p + \lambda\|\M{x}\|_p^p - \lambda\|\M{x}\|_p^p +  \lambda\|\M{x}\|_q^p\\
+     &\geq (1- \epsilon)(\|\M{Ax-b}\|_p^p + \lambda\|\M{x}\|_p^p) - \lambda\|\M{x}\|_p^p +  \lambda\|\M{x}\|_q^p\\
+     &=(1-\epsilon) \|\M{Ax-b}\|_p^p - \epsilon\lambda\|\M{x}\|_p^p +\lambda\|\M{x}\|_q^p\\
+     &\geq (1-\epsilon) \|\M{Ax-b}\|_p^p - \epsilon\lambda\|\M{x}\|_q^p +\lambda\|\M{x}\|_q^p\\
+     &= (1-\epsilon)(\|\M{Ax-b}\|_p^p + \lambda\|\M{x}\|_q^p)
+    \end{align*}
+    Combining both inequalities we get the result.
+\end{proof}
+
+As a result of the above Theorem~\ref{thm:pqcoreset}, we get the following corollary about the modified lasso problem.
+
+% For the above problem sensitivity for the $i^{th}$ point is defined as follows:
+% \begin{equation*}
+% s_i = \sup_\M{x}  \frac{(\M{a}_i^T\M{x})^2 + \frac{\lambda\|\M{x}\|_1^2}{n}}{ \sum_{j}(\M{a}_j^T\M{x})^2 +\lambda\|\M{x}\|_1^2}
+% \end{equation*}
+
+
+% Here $\M{A}$ are the concatenated version that we mentioned in section 3 and we consider $\M{x} \in \mathbb{R}^{d+1}$. The upper bound on sensitivity  will still hold. We try upper bound on the sum of these scores.
+% If we take $\M{A}=\M{U\Sigma V^T}$, then $\M{a}_j^T=\M{u}_j^T\M{\Sigma V^T}$. Letting $\M{\Sigma V^Tx}=\M{y}$, the sensitivity boils down to
+% \begin{equation*}
+% \begin{split}
+% s_{i} &= \sup_\M{y}  \frac{(\M{u}_i^T\M{y})^2 + \frac{\lambda\|\M{V\Sigma^{-1}y}\|_1^2}{n}}{ \|\M{y}\|^2 +\lambda\|\M{V\Sigma^{-1}y}\|_1^2}\\
+% &=  \sup_\M{y}  \bigg[\frac{(\M{u}_i^T\M{y})^2}{\|\M{y}\|_2^2 + \lambda\|\M{V\Sigma^{-1}y}\|_1^2} +   \frac{\frac{\lambda\|\M{V\Sigma^{-1}y}\|_1^2}{n}}{\|\M{y}\|_2^2 + \lambda\|\M{V\Sigma^{-1}y}\|_1^2}\bigg]\\
+% &\leq \sup_{\M{y},\|\M{y}\|_2=1}\frac{(\M{u}_i^T\M{y})^2}{\|\M{y}\|_2^2 + \lambda\|\M{V\Sigma^{-1}y}\|_1^2}  + \\
+% &\sup_{\M{y},\|\M{y}\|_2=1}\frac{\frac{\lambda\|\M{V\Sigma^{-1}y}\|_1^2}{n}}{\|\M{y}\|_2^2 + \lambda\|\M{V\Sigma^{-1}y}\|_1^2}\\
+% \end{split}
+% \end{equation*}
+% Now the second term can be bounded by $\frac{1}{n}$. For the first term
+% \begin{equation*}
+% \begin{split}
+% & \frac{(\M{u}_i^T\M{y})^2}{\|\M{y}\|_2^2 + \lambda\|\M{V\Sigma^{-1}y}\|_1^2} \leq \frac{\|\M{u}_i\|_2^2\|\M{y}\|_2^2}{\|\M{y}\|_2^2 + \lambda\|\M{V\Sigma^{-1}y}\|_2^2}
+% \end{split}
+% \end{equation*}
+% We maximize this quantity over all $\M{y}$ s.t. $\|\M{y}\|_2=1$, we get $\frac{\|\M{u}_i\|_2^2}{1+\frac{\lambda}{\sigma_1^2}}$ where $\sigma_1$ is the highest singular value of $\M{A}$.  Hence
+% \begin{equation*}
+% s_i \leq \frac{\|\M{u}_i\|_2^2 \sigma_1^2}{\lambda + \sigma_1^2} + \frac{1}{n}
+% \end{equation*}
+% Summing the sensitivities over the $n$ points, we get
+% \begin{equation*}
+% \Sigma_{i \in[1,n]}s_i \leq \frac{d \sigma_1^2} {\sigma_1^2 + \lambda} + 1
+% \end{equation*}
+% This is an improved bound on sum of sensitivity scores for the modified lasso than the one obtained using normal leverage scores. However if we do a slightly more careful analysis ridge regression, the bound obtained on sum of sensitivities is  
+% 	\begin{equation*}
+% 	\Sigma_{i \in[1,n]}s_i \leq  \sum_{j\in[d]}{\frac{1}{1+\frac{\lambda}{\sigma_j^2}}} +1 
+% 	\end{equation*}
+% If we sample using these scores for modified lasso we get the following bound on sample size to get the $\epsilon$ coreset guarantee.
+
+
+\begin{corollary}
+	For the modified lasso problem there exists an $\epsilon$- coreset of size $O(\frac{sd_\lambda(\M{A}) \log{sd_\lambda(\M{A})}}{\epsilon^2})$ with a high probability where $sd_\lambda(\M{A})=\sum_{j\in[d]}{\frac{1}{1+\frac{\lambda}{\sigma_j^2}}}$ is the statistical dimension of matrix $\M{A}$ which has singular values $\sigma_j$'s.
+\end{corollary}
+\begin{proof}
+    For $p=2$ and $q=1$ we get the statement of Theorem \ref{th: lprlpr} for the ridge regression and the modified lasso problem problem. By application of the theorem a coreset for ridge regression is also a coreset for the modified lasso problem for above values of $p$ and $q$. Using the results of ~\cite{avron2017sharper} we can show that by sampling points according to the ridge leverage scores we can get a coreset of size $O(\frac{sd_\lambda(\M{A}) \log{sd_\lambda(\M{A})}}{\epsilon^2})$  for ridge regression with constant probability and hence the corollary.
+\end{proof}

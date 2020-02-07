@@ -1,0 +1,116 @@
+%%%%%%%% ICML 2020 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2020} with \usepackage[nohyperref]{icml2020} above.
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+\usepackage{amsmath,amsfonts}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{comment}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+\newcommand{\M}{\mathbf}
+% Attempt to make hyperref and algorithmic work together better:
+
+% Use the following line for the initial blind version submitted for review:
+\usepackage{icml2020}
+% If accepted, instead use the following line for the camera-ready submission:
+%\usepackage[accepted]{icml2020}
+%\allowdisplaybreaks
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{On Coresets for Regularized Regression}
+
+\begin{document}
+
+\twocolumn[
+\icmltitle{On Coresets for Regularized Regression}
+
+% It is OKAY to include author information, even for blind
+% submissions: the style file will automatically remove it for you
+% unless you've provided the [accepted] option to the icml2020
+% package.
+
+% List of affiliations: The first argument should be a (short)
+% identifier you will use later to specify author affiliations
+% Academic affiliations should list Department, University, City, Region, Country
+% Industry affiliations should list Company, City, Region, Country
+
+% You can specify symbols, otherwise they are numbered in order.
+% Ideally, you should not use this facility. Affiliations will be numbered
+% in order of appearance and this is the preferred way.
+\icmlsetsymbol{equal}{*}
+
+\begin{icmlauthorlist}
+\icmlauthor{Anonymous}{an}
+\icmlauthor{Anonymous}{an}
+\icmlauthor{Anonymous}{an}
+\end{icmlauthorlist}
+
+\icmlaffiliation{an}{Anonymous,Anonymous,Anonymous,Anonymous }
+\icmlaffiliation{an}{Anonymous,Anonymous,Anonymous,Anonymous }
+\icmlaffiliation{an}{Anonymous,Anonymous,Anonymous,Anonymous }
+
+\icmlcorrespondingauthor{Anonymous }{anonymous}  %name ,email
+\icmlcorrespondingauthor{Anonymous }{anonymous}
+
+% You may provide any keywords that you
+% find helpful for describing your paper; these are used to populate
+% the "keywords" metadata in the PDF but will not be shown in the document
+\icmlkeywords{Coresets, Regularization, Regression}
+
+\vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column
+% listing the affiliations and the copyright notice.
+% The command takes one argument, which is text to display at the start of the footnote.
+% The \icmlEqualContribution command is standard text for equal contribution.
+% Remove it (just {}) if you do not need this facility.
+%\printAffiliationsAndNotice{}  % leave blank if no need to mention equal contribution
+\printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use %the standard text.
+\begin{abstract}
+We study the effect of norm based regularization on the size of coresets for the regularized regression problems. Specifically, given a matrix $ \mathbf{A} \in {\mathbb{R}}^{n \times d}$ with $n\gg d$ and a vector $\mathbf{b} \in \mathbb{R} ^ n $ and $\lambda > 0$, we analyze the size of coresets for regularized versions of regression of the form $\|\M{Ax}-\M{b}\|_p^r + \lambda\|{\M{x}}\|_q^s$ . It has been shown for the case of ridge regression ($p,q,r,s=2$) that we can obtain a coreset smaller than the coreset for its unregularized counterpart i.e. least squares regression\cite{avron2017sharper}. However we show that when $r \neq s$, no coreset for some regularized regression can have size smaller than the optimal coreset of the unregularized version. The well known lasso problem falls under this category and hence does not allow a coreset smaller than the one for least squares regression. We propose a modified version of the lasso problem and obtain for it a coreset of size smaller than the least square regression. We empirically show that the modified version of lasso also induces sparsity in solution like the lasso. We also obtain smaller coresets for $\ell_p$ regression with $\ell_p$ regularization. We extend our methods to multi response regularized regression. Finally, we empirically demonstrate the coreset performance for the modified lasso and the $\ell_1$ regression with $\ell_1$  regularization.
+\end{abstract}
+\input{sections/intro.tex}
+\input{sections/related.tex}
+\input{sections/prelims.tex}
+\input{sections/impossibiltiy.tex}
+\input{sections/modlasso.tex}
+\input{sections/lprlpr.tex}
+\input{sections/experiments.tex}
+\input{sections/conclusion.tex}
+\nocite{*}
+\bibliographystyle{icml2020}
+\bibliography{references}
+\end{document}

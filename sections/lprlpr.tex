@@ -1,0 +1,71 @@
+\section{The $\ell_p$ Regression with $\ell_p$ Regularization}
+The $\ell_p$ Regression with $\ell_p$ Regularization is given as 
+\begin{eqnarray*}
+&\min _{\mathbf{x} \in \mathbb{R}^d}& \|\mathbf{Ax} - \mathbf{b}\|_p^p + \lambda \|\M{x}\|_p^p\\
+=&\	\min _{\mathbf{x} \in \mathbb{R}^d}& {\sum_{i=1}^n |(\mathbf{a}_i^T\mathbf{x} - b_i)|^p} + \lambda~\|\M{x}\|_p^p
+\end{eqnarray*}
+For this problem our main result is as follows
+\begin{theorem}\label{th: lprlpr}
+For $\ell_p$ regression with $\ell_p$ regularization, there is a coreset of size ${O}\bigg(\frac{(\alpha\beta)^pd\log{\frac{1}{\epsilon}}}{\big(1+\frac{\lambda}{\|\M{A'}\|_{(p)}^p}\big)\epsilon^2}\bigg)$ with high probability. Here $\M{A'} = [\M{A} ~~ \M{b}]$ and has an $(\alpha,\beta,p)$ well conditioned basis.
+\end{theorem}
+\begin{proof}
+We define the sensitivity of the $i^{th}$ point for the $\ell_p$ regression with $\ell_p$ regularization  problem as follows:
+$
+s_i = \sup_\M{x'}  \frac{|\M{a'}_i^T\M{x'}|^p + \frac{\lambda\|\M{x'}\|_p^p}{n}}{ \sum_{j}|\M{a'}_j^T\M{x'}|^p +\lambda\|\M{x'}\|_p^p}$.
+Again $\M{A'}$ here is the concatenated matrix and $\M{x'}$ concatenated vector. Let $\M{A'}=\M{UV}$, then $\M{a'}_j^T=\M{u}_j^T\M{V}$. Here $\M{U}$ is an $(\alpha,\beta,p)$ well-conditioned basis for $\M{A'}$. Now let $\M{a'}_j^T\M{x'}=\M{u}_j^T\M{Vx'}= \M{{u}_j^T\M{z}}$. So
+\begin{equation*}
+\begin{split}
+s_{i} &= \sup_\M{z}  \frac{|\M{u}_i^T\M{z}|^p + \frac{\lambda}{n}\|\M{V}^{-1}\M{z}\|_p^p}{\sum_{j}|\M{u}_j^T\M{z}|^p +\lambda\|\M{V}^{-1}\M{z}\|_p^p}\\
+&= \sup_\M{z}\Bigg( \frac{|\M{u}_i^T\M{z}|^p}{\sum_{j}|\M{u}_j^T\M{z}|^p +\lambda\|\M{V}^{-1}\M{z}\|_p^p} \\ 
+&+ \frac{\frac{\lambda}{n}\|\M{V}^{-1}\M{z}\|_p^p}{\sum_{j}|\M{u}_j^T\M{z}|^p +\lambda\|\M{V}^{-1}\M{z}\|_p^p}\Bigg)\\
+&\leq \sup_\M{z}  \frac{|\M{u}_i^T\M{z}|^p}{\sum_{j}|\M{u}_j^T\M{z}|^p +\lambda\|\M{V}^{-1}\M{z}\|_p^p} + \frac{1}{n}
+\end{split}
+\end{equation*}
+$\M{U}$ is an $(\alpha,\beta,p)$- well conditioned basis for $\M{A'}$. Hence by definition $\|\M{U}\|_p \leq \alpha$ and $\forall \M{z} \in \mathbb{R}^{d+1}, \|\M{z}\|_q  \leq \beta \|\M{U}\M{z}\|_p $ where $\frac{1}{p}+\frac{1}{q}=1$. Now the first term $\frac{|\M{u}_i^T\M{z}|^p}{\sum_{j}|\M{u}_j^T\M{z}|^p +\lambda\|\M{V}^{-1}\M{z}\|_p^p}$ lies in the interval $\Big[\frac{|\M{u}_i^T\M{z}|^p}{\alpha^p\|\M{z}\|_q^p +\lambda\|\M{V}^{-1}\M{z}\|_p^p},\frac{|\M{u}_i^T\M{z}|^p}{\frac{1}{\beta^p}\|\M{z}\|_q^p +\lambda\|\M{V}^{-1}\M{z}\|_p^p}\Big]$. This is by the application of Holder's inequality and the definition of $\beta$. Now instead of calculating supremum over  $\frac{|\M{u}_i^T\M{z}|^p}{\frac{1}{\beta^p}\|\M{z}\|_q^p +\lambda\|\M{V}^{-1}\M{z}\|_p^p}$, we calculate the infimum over its reciprocal. Lets call it $m$
+\begin{equation*}
+\begin{split}
+m&=\inf_{\M{z}} \bigg(\frac{\|\M{z}\|_q^p}{\beta^p|\M{u}_j^T\M{z}|^p} + \frac{\lambda\|\M{V^{-1}z}\|_p^p}{|\M{u}_j^T\M{z}|^p}\bigg)\\
+&\geq \frac{1}{\beta^p} \inf_{\M{z}}\frac{\|\M{z}\|_q^p}{\|\M{u}_j\|_p^p\|\M{z}\|_q^p} + 
+\lambda \inf_{\M{z}}\frac{\|\M{V^{-1}z}\|_p^p}{|\M{u}_j^T\M{z}|^p}\\
+&\geq \frac{1}{\beta^p\|\M{u}_j\|_p^p} + \lambda \inf_{\M{z}}\frac{\|\M{V^{-1}z}\|_p^p}{|\M{u}_j^T\M{z}|^p}
+\end{split}
+\end{equation*}
+Now sensitivity of $i^{th}$ point is bounded as $s_i \leq \frac{1}{m} +\frac{1}{n}$. Therefore $s_i \leq \frac{1}{\frac{1}{\beta^p\|\M{u}_j\|_p^p} + \lambda  \inf_{\M{z}}\frac{\|\M{V^{-1}z}\|_p^p}{|\M{u}_j^T\M{z}|^p}} + \frac{1}{n}$. 
+
+%For the special case when $\M{A}=\M{U}$ and $\M{X}=\M{I}$, we get
+%$s_i \leq \frac{\|\M{u}_i\|_p^p}{\frac{1}{\beta}+\lambda\frac{\|\M{z}\|_1}{\|\M{z}\|_{\infty}}} $
+Now let us consider
+$$m'=\inf_{\M{z}}\frac{\|\M{A'V^{-1}z}\|_p^p}{|\M{u}_j^T\M{z}|^p}
+\geq \inf_{\M{z}}\frac{\|\M{A'V^{-1}z}\|_p^p}{\|\M{u}_j\|_p^p\|\M{z}\|_q^p}
+\geq \frac{1}{\beta^p \|\M{u}_j\|_p^p}$$
+Also  $\|\M{A'V^{-1}z}\|_p \leq \|\M{A'}\|_{(p)}\|\M{V^{-1}z}\|_p$. Hence $\|\M{V^{-1}z}\|_p \geq \frac{\|\M{A'V^{-1}z}\|_p}{\|\M{A'}\|_{(p)}}$. Here $\|\M{A'}\|_{(p)}$ represents the induced matrix norm defined as $\|\M{A'}\|_{(p)}= \sup_{\M{x'} \neq \M{0}}\frac{\|\M{A'x'}\|_p}{\|\M{x'}\|_p}$. Combining this with the inequality for $m$ we get
+\begin{equation*}
+m \geq \frac{1}{\beta^p\|\M{u}_j\|_p^p}\bigg(1+ \frac{\lambda}{\|\M{A'}\|_{(p)}^p}\bigg) 
+\end{equation*}
+This results in $s_i \leq \frac{\beta^p\|\M{u}_i\|_p^p}{1+ \frac{\lambda}{\|\M{A'}\|_{(p)}^p}}+ \frac{1}{n}$.  So the sum of sensitivities is bounded by $S \leq \frac{(\alpha\beta)^p}{1+ \frac{\lambda}{\|\M{A'}\|_{(p)}^p}} +1 $.
+Using the probability distribution based on sensitivity upper bounds defined in the proof to sample rows of $\M{A'}$ and applying Theorem~\ref{th: linear core}, we get the result. 
+\end{proof}
+% 
+As the value is decreasing in $\lambda$ this is smaller than the coreset obtained for $\ell_p$ regression using the well conditioned basis. This method works with any well conditioned basis and sampling complexity is dependent on the quality of the well conditioned basis. For e.g.: for $p >2$ we can get $\alpha\beta = d^{1/p + 1/q}$. So we can get a coreset of size $O\bigg(\frac{d^{p+1}\log{\frac{1}{\epsilon}}}{\big(1+\frac{\lambda}{\|\M{A'}\|_{(p)}^p}\big)\epsilon^2}\bigg)$ with high probability.
+Let us consider the special case of the Regularized Least Deviation problem.
+% 
+\subsection{Regularized Least Absolute Deviation (RLAD)}
+The RLAD problem is given as 
+\begin{equation*}
+\min _{\mathbf{x} \in \mathbb{R}^d} \|\mathbf{Ax} - \mathbf{b}\|_1 + \lambda \|\M{x}\|_1\\
+\end{equation*}
+% 
+This has the benefits of robustness of $\ell_1$ regression and sparsity inducing nature of lasso \cite{wang2006regularized}. Plugging in $p=1$ in the above analysis we get the following upper bound for sensitivity of the RLAD problem: 
+$s_i \leq \frac{\beta\|\M{u}_i\|_1}{1+ \frac{\lambda}{\|\M{A'}\|_{(1)}}}+\frac{1}{n} = \frac{\beta\|\M{u}_i\|_1}{1+ \frac{\lambda}{\max_{k \in [d]}\M{\|a'^{k}}\|_1}} + \frac{1}{n}$ where $\M{a'^k}$ is the $k^{th}$ column of $\M{A'}$. So the sum of sensitivities is bounded by $S \leq \frac{\alpha\beta}{1+ \frac{\lambda}{\max_{k \in [d]}\M{\|a'}^{k}\|_1}} +1 $. This implies a coreset size of  ${O}\bigg(\frac{(\alpha\beta)d\log{\frac{1}{\epsilon}}}{\big(1+\frac{\lambda}{\|\M{A'}\|_{(1)}}\big)\epsilon^2}\bigg)$ for the RLAD problem with high probability by Theorem~\ref{th: linear core}. This is smaller than the size of coreset ${O}(\frac{(\alpha\beta)d}{\epsilon^2})$ obtained for $\ell_1$ regression using well conditioned basis. For $p=1$, we can get a well conditioned basis with $\alpha\beta=d^{3/2}$. So we can get a coreset of size $O\bigg(\frac{d^{5/2}\log{\frac{1}{\epsilon}}}{\big(1+\frac{\lambda}{\|\M{A'}\|_{(1)}}\big)\epsilon^2}\bigg)$.
+% 
+\subsection{Coresets for Multiresponse Regularized Regression}
+Consider the multiresponse RLAD problem given as
+\begin{equation*}
+    \min_{\M{X} \in \mathbb{R}^{d \times k}}{\|\M{AX-B}\|_1 + \lambda\|\M{X}\|_1}
+\end{equation*}
+Here $\M{B} \in \mathbb{R}^{n \times k}$ i.e. there are $k$ different responses and hence our solution is also a matrix $\M{X}$. We regularize the problem with entry wise $1$ norm of the solution matrix. Let us consider the concatenated matrices $\hat{\M{A}}= [\M{A} ~~ \M{-B}]$ and $\hat{\M{X}}=\begin{bmatrix} \mathbf{X}\\ \M{I_k} \end{bmatrix}$ where $\M{I_k}$ is $k$-dimensional identity matrix. Using this matrices we define the sensitivity of the multiresponse RLAD problem as $s_i=\sup_{\hat{\M{X}}}  \frac{\|\hat{\M{a}}_i^T\hat{\M{X}}\|_1 + \frac{\lambda\|\hat{\M{X}}\|_1}{n}}{ \sum_{j}\|\hat{\M{a}}_j^T\hat{\M{X}}\|_1 +\lambda\|\hat{\M{X}}\|_1}$. 
+We can get the sensitivity upper bounds for multiple response RLAD as we obtained for the single response RLAD. This gives us the following result
+\begin{corollary}\label{cor:mreslpr}
+For multiple response RLAD there exists a coreset of size ${O}\bigg(\frac{dk(\alpha\beta)\log{\frac{1}{\epsilon}}}{\big(1+\frac{\lambda}{\|\hat{\M{A}}\|_{(1)}}\big)\epsilon^2}\bigg)$ with high probability 
+\end{corollary}
+The proof is given in the appendix and is similar to the one for the single response case. This can be extended to other values of $p$.

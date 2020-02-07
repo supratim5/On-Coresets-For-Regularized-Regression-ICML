@@ -1,0 +1,84 @@
+\section{Notations and Preliminaries}
+In this section we describe all the notations, definitions and existing results that we will use throughout this paper. 
+A scalar or a function (specified by context) is denoted by a lower case letter, e.g. $x$ while a vector is denoted by a boldface lower case letter, e.g. $\M{x}$. 
+A matrix is denoted by a boldface  uppercase letter, e.g. $\M{X}$.
+A non bold face upper case letter may represent a set or a scalar value as specified by the context.
+We represent a dataset with a matrix where the rows of the matrix represent data points and the columns represent the features.
+Vectors are considered column vectors unless stated otherwise.
+$\M{a}_i$ represents the $i^{th}$ row of matrix $\M{A}$ while $\M{a}^k$ represents its $k^{th}$ column and $a_{ij}$ represents the entry in its $i^{th}$ row and $j^{th}$ column.
+$O$ represent big-O in the ordered notation. For two quantities $x$ and $b$ and a suitable $\epsilon > 0$ we will often write $x \in (1 \pm \epsilon) b$ to compactly represent that $ (1 - \epsilon)b \le x \le (1 + \epsilon) b$. All statements where we say ``high probability", hold with probability at least some large constant, e.g. $0.99$, unless otherwise stated.
+
+For a vector $\M{x} \in \mathbb{R}^d$, $\|\M{x}\|_p$, $p \geq 1$ represents its $p^{th}$ norm which is defined as $\|\M{x}\|_p= ({\sum_{j=1}^d|x_j|^p})^\frac{1}{p}$. 
+The infinity norm for a vector  is given as $\|\M{x}\|_\infty = \max_j |x_j| $. 
+For a matrix $\M{A} \in \mathbb{R}^{n \times d}$, $\|\M{A}\|_p$ denotes its entry wise $p$ norm which is defined  as $\|\M{A}\|_p = (\sum_{i=1}^n\sum_{j=1}^d |a_{ij}|^p)^{\frac{1}{p}}$. 
+For $p=2$, this is also called the Frobenius norm and is also represented as $\|\M{A}\|_F$. 
+We differentiate the matrix entry wise $p$ norm from the matrix induced operator $p$ norm which is denoted by the symbol $\|\M{A}\|_{(p)}$ and is defined as $\|\M{A}\|_{(p)}= \sup_{\M{x} \neq \M{0}}\frac{\|\M{Ax}\|_p}{\|\M{x}\|_p}$. 
+Specifically for $p=2$, $\|\M{A}\|_{(2)} = \sigma_{\text{max}}(\M{A})$ i.e. the highest singular value of matrix $\M{A}$ and for $p=1$, $\|\M{A}\|_{(1)}$ is the highest absolute column sum of the matrix $\M{A}$. 
+The Singular Value Decomposition $($abbreviated as SVD$)$ of a matrix $\M{A}$ is given as $\M{A}=\M{U\Sigma V^T}$ where $\M{U} \in \mathbb{R}^{n \times d}$ and $\M{V} \in  \mathbb{R}^{d \times d}$ represent $\M{A}$'s left and right singular vectors respectively. 
+$\M{\Sigma} \in \mathbb{R}^{d \times d}$ is a diagonal matrix containing the singular values of $\M{A}$ in descending order.
+%
+\subsection{Coresets}
+A coreset is a small summary of data which can give provable guarantees for a particular optimization problem. 
+Formally, given a dataset
+$\M{X} \in \mathbb{R}^{n \times d}$ where the rows represent the datapoints, set of queries $Q$ and a non-negative cost function $\mathnormal{f}_{\M{q}}(\M{x})$ with parameter $\M{q} \in {Q}$ and data point $\M{x} \in \M{X}$, a dataset consisting of subsampled and appropriately reweighted points $\M{C}$ is an $\epsilon-$coreset if $\forall \M{q} \in Q$, 
+\begin{equation*}
+  \bigg|\sum_{\M{x} \in \M{X}}f_{\M{q}}(\M{x}) - \sum_{\tilde{\M{x}} \in \M{C}}{f}_{\M{q}}(\mathbf{\tilde{x}})\bigg| \leq \epsilon\sum_{\M{x} \in \M{X}}{f}_{\M{q}}(\M{x})  
+\end{equation*}
+ for some $\epsilon > 0$. We will denote $\sum_{\M{x} \in \M{X}}f_{\M{q}}(\M{x}) = f_\M{q}(\M{X})$. Even if the function is defined over entire dataset $\M{X}$ and not on individual points we can define coreset for it in terms of $f_\M{q}(\M{X})$ directly. For e.g. $\|\M{Ax}\|_p^r$ cannot be represented in terms of sum on individual $\M{a_{i}}$'s but we can still define coreset property for it.
+ %
+ When the above equation is satisfied  $\forall \M{q} \in Q$, $\M{C}$ is  called a strong coreset. We will refer only to a strong coreset as coreset in this paper. The advantage of
+ a strong coreset, specifically in machine learning problems, is that we can train the model on the coreset, i.e. a smaller data set, and then use the model obtained from it as a surrogate for the model trained on the original data, with comparable accuracy. Formally, via \cite{bachem2017practical}, let $\M{C}$ be an $\epsilon-$coreset of $\M{X}$  for $\epsilon \in (0,\frac{1}{3})$ for some function. If $\M{q^{*}_X}$ and $\M{q^{*}_C}$ denote the optimal (infimum) solutions for $\M{X}$ and $\M{C}$ respectively, then $f_{\M{q^{*}_C}}(\M{X}) \leq (1+3\epsilon)f_{\M{q^{*}_X}}(\M{X})$. 
+ %
+Given a dataset $\M{X}$, the query space $Q$, as well as the cost function $f_{\M{q}}(\cdot)$, Langberg et al.~\cite{langberg2010universal} define a set of scores,
+termed as sensitivities, that can be used to create coresets via importance sampling. 
+The sensitivity of the  $i^{th}$ point is defined as 
+$s_{i} = \sup_{\M{q} \in Q} \frac{f_{\M{q}}(\M{x})}{\sum_{\M{x'} \in \M{X}} {{f}_\M{q}(\M{x'})}}$.
+Intuitively sensitivity of a point captures its worst case contribution to the value of an objective function. The work by Langberg et al. \cite{langberg2010universal} shows that using any upper bounds to the sensitivity scores, 
+we can create a probability distribution, using which we can then sample a coreset. Throughout the paper we refer to the sensitivity of the $i^{th}$ data point for some objective function as $s_i$ and the function will be clear from the context. Feldman et al. \cite{feldman2011unified} provided a unified framework to build coresets using the sensitivity framework which was improved by Braverman et al.~\cite{braverman2016new}. Their theorem on coreset size using sensitivity is the following:
+\begin{theorem}\cite{braverman2016new}\label{th:loglinear core}
+Let $f_{\M{q} \in Q}(\cdot)$ be the function, $\M{X}$ be the dataset and query space $Q$ be of dimension $d$. Let the sum of sensitivities be $S$. Let $(\epsilon,\delta) \in (0,1)$. Let $r$ be such that
+\begin{equation*}
+r \geq \frac{10S}{\epsilon^2}\bigg(d\log{S} + \log{\frac{1}{\delta}}\bigg).
+\end{equation*}
+$\M{C}$ be a matrix of $r$ rows, each 
+sampled i.i.d from $\M{X}$ such that for every $\M{x_i} \in \M{X}$ and $\tilde{\M{x}}_i \in \M{C}$, $\tilde{\M{x}}_i$ is a scaled version of $\M{x_i}$ with probability $\frac{s_i}{S}$ and scaled by $\frac{S}{rs_i}$, then $\M{C}$ is an $\epsilon$-coreset of $\M{X}$ for function $f$, with probability at least $1- \delta$.
+\end{theorem}
+%
+We present a slightly better version of this theorem obtained by using a tighter tail inequality and use it for our coreset size. The proof of the following theorem is present in Appendix.
+\begin{theorem}\label{th: linear core}
+For the same setup as defined in Theorem \ref{th:loglinear core}, if $r = O{\big(\frac{S}{\epsilon^2}(d\log{\frac{1}{\epsilon}} + \log{\frac{1}{\delta}})\big)}$,  $\M{C}$ is an $\epsilon$-coreset of $\M{X}$ for function $f$, with probability at least $1- \delta$.
+\end{theorem}
+\subsection{$\ell_p$ Regression and Regularization}
+The $\ell_p$ regression problem is defined as follows: given $\M{A}$ and $\M{b}$, find $\min _{\mathbf{x} \in \mathbb{R}^d} \|\mathbf{Ax} - \mathbf{b}\|_p^p$. 
+For $p=1,2$ the problems is referred to as Least Absolute Deviation and Least Squares Regression  respectively.
+We call a matrix $\M{\Pi}$ to have  {\em subspace preserving} property if, $\forall {\M{x}} \in \mathbb{R}^d$
+\begin{equation*}
+| \|\M{\Pi Ax}\|_p - \|\M{Ax}\|_p | \leq \epsilon \|\M{Ax}\|_p.
+\end{equation*}
+Notice that if a sampling and reweighing matrix $\M{\Pi}$ satisfies the $\ell_p$ subspace preservation property, it will also provide a coreset for the $\ell_p$ regression problem.
+If we create matrix $\M{A'}$ by concatenating $\M{A}$ and $\M{b}$ as $\M{A'}=\M{[A ~~ b]}$ and consider $\M{x'}=\begin{bmatrix} \mathbf{x}\\ -1 \end{bmatrix}$, then a subspace preserving property of $\M{\Pi}$ in $\mathbb{R}^{d+1}$ implies that  $\M{\Pi A}$ is a coreset for $\ell_p$ regression also.
+For $p=2$, an  $O(\frac{d \log{d}}{\epsilon^2})$ coreset can be obtained by sampling  using the popular leverage scores which are the squared Euclidean row-norms of any orthogonal column basis of $\M{A}$~\cite{drineas2006sampling}.
+%
+A matrix $\M{U}$ is called an $(\alpha,\beta,p)$ well conditioned basis for $\M{A}$ if $\|\M{U}\|_p \leq \alpha$ and $\forall \M{x} \in \mathbb{R}^d, \|\M{x}\|_q  \leq \beta \|\M{U}\M{x}\|_p $ where $\frac{1}{p}+\frac{1}{q}=1$. 
+In fact, the $\M{U}$ obtained using the SVD of $\M{A}$ is a $(\sqrt{d},1,2)$ well conditioned basis of $\M{A}$. 
+For other values of $p>1$ \cite{dasgupta2009sampling} showed that by sampling using the $p^{th}$ power of the $p$ norm of rows of the $(\alpha,\beta,p)$ well conditioned basis of $\M{A}$, we can obtain a coreset of size $\tilde{O}(\alpha\beta)^p$ with high probability for $\ell_p$ subspace preservation and hence $\ell_p$ regression. Well conditioned basis for $p$ norm can be constructed in various ways like using Cauchy random variables~\cite{sohler2011subspace} or exponential random variables \cite{woodruff2013subspace}. Yang et al. provide a good review of methods \cite{yang2015implementing}. Our analysis works with any method of constructing the well-conditioned basis.
+%
+For the norm based regularized regression we consider the general form for $\lambda > 0$
+\begin{equation*}
+    \min _{\M{x} \in \mathbb{R}^d} \|\M{A}\M{x} - \M{b}\|_p^r	+ \lambda \|\M{x}\|_q^s
+\end{equation*}
+for $p,q \geq 1$ and $r,s>0$. Notice that not all regularized regression forms falling under above category can be expressed as sum of individual functions. A  coreset for this problem is $(\tilde{\M{A}},\tilde{\M{b}})$ such that $\forall \M{x} \in \mathbb{R}^d$ and $\forall \lambda >0 $, 
+	\begin{equation*}
+	\|\M{\tilde{A}}{\M{x}} - \M{\tilde{b}}\|_p^r	+ \lambda \|{\M{x}}\|_q^s \in (1\pm\epsilon) (\|\M{A}\M{x} - \M{b}\|_p^r	+ \lambda \|\M{x}\|_q^s)
+	\end{equation*} 
+It is not difficult to verify that a coreset for the unregularized version of regression  is also a coreset for the regularized one. However, to reiterate, our goal is to analyze whether the size of coreset for the above form of regularized regression can be shown to be provably smaller than the size of the coreset for the unregularized counterpart. We answer this question in the following sections. We first show a negative result where the regularization does not result in a smaller coreset. Next, we show settings where the size of the coreset does decrease inversely with $\lambda$. 
+%
+Analogous to the subspace embedding, given a matrix $\M{A} \in \mathbb{R}^{n \times d}$,  a matrix $\M{A_c}$ with $k$ rows is a coreset for $(\|\mathbf{Ax}\|_p^r + \lambda \|\M{x}\|_q^s) $ if $\forall{\M{x}} \in \mathbb{R}^d$ and $\forall \lambda > 0$, the following holds.
+\begin{equation}
+\begin{split}
+&(1-\epsilon)(\|\mathbf{Ax}\|_p^r + \lambda \|\M{x}\|_q^s) \leq \|\mathbf{A_cx}\|_p^r + \lambda \|\M{x}\|_q^s\\
+&\leq  (1+\epsilon)(\|\mathbf{Ax}\|_p^r + \lambda \|\M{x}\|_q^s)
+\label{eq:regcore}
+\end{split}
+\end{equation}
+It is easy to see that such a coreset will also give a coreset for the $\ell_p$ regression with $\ell_p$ regularization by using the concatenated matrix $\M{A'}$ and vector $\M{x'}$.

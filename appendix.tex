@@ -1,0 +1,125 @@
+\documentclass{article}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2020} with \usepackage[nohyperref]{icml2020} above.
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{booktabs} % for professional tables
+\usepackage{amsmath,amsfonts}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{amsthm}
+\usepackage{comment}
+
+\title{Appendix : On Coresets for Regularized Regression}
+\date{February 2020}
+\newcommand{\M}{\mathbf}
+\begin{document}
+
+\maketitle{}
+
+\section*{Proof of Theorem 3.2}
+\begin{proof}
+The proof is follows,
+\begin{itemize}
+		\item $\mathcal{X}$ is a weighted dataset and $\mu_{\mathcal{X}}(x)$ is the weight of a point $x \in \mathcal{X}$.
+		\item The space of possible solutions is $\mathcal{Q}$ and for any $Q \in \mathcal{Q}$, $\mbox{Cost}(\mathcal{X},Q) = \sum_{x \in \mathcal{X}} \mu_{\mathcal{X}}(x) f_{Q}(x)$. Here $f_{Q}(x)$ is the non negative cost of point $x$ at query $Q$.
+		\item ${\mu}_\mathcal{C}(x) = {\mu}_{\mathcal{X}}(x)/mq(x)$ is the weight of $x \in \mathcal{C}$, where $\mathcal{C}$ is the set of sampled points and $q(x)$ is sampling probability for $x$. $m$ is the size of $\mathcal{C}$.
+		\item $\mbox{Cost}(\mathcal{C},Q) = \sum_{x \in \mathcal{C}} {\mu}_\mathcal{C}(x) f_{Q}(x)$.
+	\end{itemize}
+	
+Now we define the sensitivity score for each point $x$ as
+$$\sigma(x) = \sup_{Q \in \mathcal{Q}} \frac{f_{Q}(x)}{\sum_{x' \in \mathcal{X}} \mu_{\mathcal{X}}(x') f_{Q}(x')}$$
+Let $s(x)$ be an upper bound on $\sigma(x)$ and let $S =\sum_{x \in \mathcal{X}} \mu_\mathcal{X}(x) s(x)$. 
+Let the sampling probability be $q(x) = \frac{\mu_\mathcal{X}(x)s(x)}{S}$. As in the text, we use multinomial sampling with replacement to create the coreset, i.e. each sample is $x$ with probability $q(x)$.
+
+For all $Q \in \mathcal{Q}$ and $x \in \mathcal{X}$ define a function  
+$g_{Q}(x) =\frac{\mu_{\mathcal{X}}(x)f_{Q}(x)}{\mbox{Cost}(\mathcal{X},Q) Sq(x)}$                                
+So, $\mathbb{E}[g_{Q}(x)]=\frac{1}{S}$ and 
+$\frac{1}{m}\Sigma_{x\in \mathcal{C}}g_{Q}(x)=\frac{\mbox{Cost}(\mathcal{C},Q)} {S\mbox{Cost}(\mathcal{X},Q)}$. 
+
+\textcolor{red}{Upto this point is exactly what is done in the paper in section 2.3 page 9. Now we apply Bernstein inequality at Theorem 1.4 (page(25) in \cite{dubhashi2009concentration} instead of Hoeffding.}
+
+Let, $X = \sum_{x \in C} g_{Q}(x)$, then $\mathbb{E}[X] = \sum_{x \in C} \mathbb{E}[g_{Q}(x)] = m/S$. 
+\begin{eqnarray}
+ \mbox{var}(g_{Q}(x)) &\leq& \mathbb{E}[(g_{Q}(x))^{2}] \nonumber \\
+ &=& \sum_{x \in \mathcal{X}} \frac{\mu_{\mathcal{X}}(x)^{2}f_{Q}(x)^{2}}{\mbox{Cost}(\mathcal{X},Q)^{2}S^{2}q(x)} \nonumber \\
+ &\leq& \sum_{x \in \mathcal{X}} \frac{\mu_{\mathcal{X}}(x)^{2}f_{Q}(x)^{2}S\mbox{Cost}(\mathcal{X},Q)}{\mbox{Cost}(\mathcal{X},Q)^{2}S^{2}\mu_{\mathcal{X}}(x)f_{Q}(x)} \nonumber \\
+ &=& 1/S
+\end{eqnarray}
+We get the third eqn by replacing values of $q(x)$ and $s(x)$ as mentioned above,
+
+Now $\mbox{var}(g_{Q}(x)) \leq \mathbb{E}[(g_{Q}(x))^{2}] \leq 1/S$. So $\mbox{var}(X)\leq m/S$. 
+
+Now applying Bernstein we get,
+\begin{eqnarray}
+ Pr(| X-\mathbb{E}[X] | \geq m\epsilon') &\leq& \exp(-\frac{m^{2}\epsilon'^{2}}{m/S+m\epsilon'/3}) \nonumber \\
+ \mbox{Pr}\bigg(\Big\vert\frac{\mbox{Cost}(\mathcal{C},Q)}{S\mbox{Cost}(\mathcal{X},Q)} - \frac{1}{S}\Big\vert \geq {\epsilon}'\bigg) &\leq& \exp\bigg(-\frac{m\epsilon^{'2}}{(1/S)+({\epsilon^{'}}/3)}\bigg)
+\end{eqnarray}
+
+Replacing $\epsilon^{'}$ with $\epsilon/S $ we get,
+$$\mbox{Pr}\bigg(\Big\vert\mbox{Cost}(C,q)-\mbox{Cost}(X,q) \Big\vert \geq \epsilon\mbox{Cost}(X,q)\bigg) \leq 2\exp\bigg(\frac{-2m\epsilon^{2}}{S(1+\frac\epsilon 3)}\bigg)$$
+To make the above probability less than $\delta$ we choose $m \geq \frac{S}{2\epsilon^2}(1+\frac\epsilon 3)\log\frac{2}{\delta}$ which depends on $S$ and not $S^2$. This is equivalent to the guarantee obtained in the survey \cite{bachem2017practical} in section 2.3 page 7-9, while using lesser samples.
+
+\end{proof}
+\section*{Proof of Corollary 6.1.1}
+\begin{proof}
+For $\hat{\M{A}}= [\M{A} ~~ \M{-B}]$ and $\hat{\M{X}}=\begin{bmatrix} \mathbf{X}\\ \M{I_k} \end{bmatrix}$ where $\M{I_k}$ is $k$-dimensional identity matrix, the sensitivity of Multiresponse RLAD problem is given as 
+\begin{equation*}s_i=\sup_{\hat{\M{X}}}  \frac{\|\hat{\M{a}}_i^T\hat{\M{X}}\|_1 + \frac{\lambda\|\hat{\M{X}}\|_1}{n}}{ \sum_{j}\|\hat{\M{a}}_j^T\hat{\M{X}}\|_1 +\lambda\|\hat{\M{X}}\|_1}
+\end{equation*}
+Let $\hat{\M{A}}=\M{UY}$ where $\M{U}$ is an $(\alpha,\beta,1)$ well conditioned basis for $\hat{\M{A}}$. So $\hat{\M{a}}_j^T\hat{\M{X}}=\M{u_j}^T\M{Y}\hat{\M{X}}$. Let $\M{Y}\hat{\M{X}}=\M{Z}$. So the sensitivity equation becomes
+\begin{eqnarray*}
+   s_i&=\sup_{\M{Z}}  \frac{\|{\M{u}}_i^T{\M{Z}}\|_1 + \frac{\lambda\|{\M{Y}^{-1}\M{Z}}\|_1}{n}}{ \sum_{j}\|{\M{u}}_j^T{\M{Z}}\|_1 +\lambda\|{\M{Y}^{-1}\M{Z}}\|_1}\\
+   &\leq \sup_{\M{Z}} \frac{\|{\M{u}}_i^T{\M{Z}}\|_1}{\sum_{j}\|{\M{u}}_j^T{\M{Z}}\|_1 +\lambda\|{\M{Y}^{-1}\M{Z}}\|_1} + \frac{1}{n}
+\end{eqnarray*} 
+Instead of supremum of this quantity we take the infimum of its reciprocal. Lets call it $m$.
+\begin{eqnarray*}
+m&=\inf_{\M{Z}} \frac{\sum_{j}\|{\M{u}}_j^T{\M{Z}}\|_1 +\lambda\|{\M{Y}^{-1}\M{Z}}\|_1}{\|{\M{u}}_i^T{\M{Z}}\|_1} \\
+& \geq \inf_{\M{Z}}\frac{\sum_{j}\|{\M{u}}_j^T{\M{Z}}\|_1}{\|{\M{u}}_i^T{\M{Z}}\|_1} + \inf_{\M{Z}}\frac{\lambda\|{\M{Y}^{-1}\M{Z}}\|_1}{\|{\M{u}}_i^T{\M{Z}}\|_1}
+\end{eqnarray*}
+Let us consider the first part. $\M{U}$ is an $(\alpha,\beta,1)$- well conditioned basis for $\hat{\M{A}}$. Hence by definition $\|\M{U}\|_1 \leq \alpha$ and $\forall \M{z} \in \mathbb{R}^{d+k}, \|\M{z}\|_\infty  \leq \beta \|\M{U}\M{z}\|_1 $ where $\frac{1}{p}+\frac{1}{q}=1$. So the first term in the infimum
+\begin{align*}
+    &\inf_{\M{Z}}\frac{\sum_{j}\|{\M{u}}_j^T{\M{Z}}\|_1}{\|{\M{u}}_i^T{\M{Z}}\|_1}\\
+    &= \inf_{\M{Z}}\frac{\sum_{l=1}^{k}{\|\M{U}\M{z}^l\|_1}}{\sum_{l=1}^{k}|\M{u_i}^T\M{z}^l|}\\
+    &\geq \frac{\frac{1}{\beta}\sum_{l=1}^{k}\|\M{z}^l\|_\infty}{\|\M{u_i}\|_1\sum_{l=1}^{k}\|\M{z}^l\|_\infty}\\
+    &=\frac{1}{\beta\|\M{u_i}\|_1}
+\end{align*}
+Now for the second term in the infimum let us consider instead
+\begin{align*}
+    &\inf_{\M{Z}}\frac{\|\M{AY^{-1}Z}\|_1}{\|{\M{u}}_i^T{\M{Z}}\|_1}\\
+    &=\inf_{\M{Z}}\frac{\|\M{UZ}\|_1}{\|{\M{u}}_i^T{\M{Z}}\|_1}\\
+    &\geq\frac{1}{\beta\|\M{u_i}\|_1}
+\end{align*}
+Now $\|\M{AY^{-1}Z}\|_1 \leq \|\M{A}\|_{(1)}\|\M{Y^{-1}Z}\|_1$. Therefore
+\begin{align*}
+    &\inf_{\M{Z}}\frac{\|\M{Y^{-1}Z}\|_1}{\|{\M{u}}_i^T{\M{Z}}\|_1}\\
+    &\geq \inf_{\M{Z}}\frac{\|\M{AY^{-1}Z}\|_1}{{\|\M{A}\|_{(1)}\|\M{u}}_i^T{\M{Z}}\|_1}\\
+    &\geq\frac{1}{\beta\|\M{A}\|_{(1)}\|\M{u_i}\|_1}
+\end{align*}
+Combining both these 
+\begin{equation*}
+    m \geq \frac{1}{\beta\|\M{u_i}\|_1}\bigg(1+\frac{\lambda}{\|\M{A}\|_{(1)}}\bigg)
+\end{equation*}
+Now sensitivity of $i^{th}$ point is bounded as $s_i \leq \frac{1}{m} +\frac{1}{n}$. Therefore $s_i \leq \frac{\beta\|\M{u}_i\|_1}{1+ \frac{\lambda}{\|\M{A}\|_{(1)}}}+\frac{1}{n}$. So the sum of sensitivities is bounded by $S \leq \frac{\alpha\beta}{1+ \frac{\lambda}{\|\M{A}\|_{(1)}}} +1 $. This fact combined with fact that dimension of $\M{X}$ is $dk$ and applying theorem 3.2 proves the corollary
+\end{proof}
+\bibliographystyle{plain}
+\bibliography{refappendix}
+
+\end{document}
+
